@@ -42,7 +42,6 @@ public class RusherKit extends AbstractKit {
         if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(rusherHealth);
-            Bukkit.broadcastMessage("Set to " + rusherHealth);
             player.setWalkSpeed(this.rusherWalkSpeed);
             AttributeInstance attackDamage = player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
             if (attackDamage != null) {
