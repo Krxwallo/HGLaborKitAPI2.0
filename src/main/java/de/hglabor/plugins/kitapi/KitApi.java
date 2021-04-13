@@ -118,7 +118,7 @@ public final class KitApi {
         kits.add(CopyCatKit.INSTANCE);
         kits.add(GladiatorKit.INSTANCE);
         kits.add(GamblerKit.INSTANCE);
-        //kits.add(SmogmogKit.INSTANCE);
+        kits.add(SmogmogKit.INSTANCE);
         kits.add(RogueKit.INSTANCE);
         kits.add(SnailKit.INSTANCE);
         kits.add(DiggerKit.INSTANCE);
@@ -158,6 +158,12 @@ public final class KitApi {
         kits.add(KangarooKit.INSTANCE);
         kits.add(HulkKit.INSTANCE);
         kits.add(RusherKit.INSTANCE);
+        kits.add(GardenerKit.INSTANCE);
+        kits.add(BeequeenKit.INSTANCE);
+        kits.add(PoseidonKit.INSTANCE);
+        kits.add(PhantomKit.INSTANCE);
+        kits.add(ArcherKit.INSTANCE);
+        kits.add(PirateKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
