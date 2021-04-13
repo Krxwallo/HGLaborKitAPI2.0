@@ -25,14 +25,14 @@ public class RusherKit extends AbstractKit {
     @IntArg
     private final int rusherHealth;
     @FloatArg
-    private final float damageMultiplier;
+    private final float rusherDamageMultiplier;
     @FloatArg
     private final float rusherWalkSpeed;
 
     private RusherKit() {
         super("Rusher", Material.GOLDEN_SWORD);
         rusherHealth = 8; // 8 = 4 hearts
-        damageMultiplier = 2.0F; // 2.0F = twice as much damage
+        rusherDamageMultiplier = 2.0F; // 2.0F = twice as much damage
         rusherWalkSpeed = 4.0F; // 4.0F = twice as fast
     }
 
@@ -46,7 +46,7 @@ public class RusherKit extends AbstractKit {
             player.setWalkSpeed(this.rusherWalkSpeed);
             AttributeInstance attackDamage = player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
             if (attackDamage != null) {
-                attackDamage.setBaseValue(attackDamage.getBaseValue()*damageMultiplier);
+                attackDamage.setBaseValue(attackDamage.getBaseValue()* rusherDamageMultiplier);
             }
         }
     }
@@ -63,6 +63,6 @@ public class RusherKit extends AbstractKit {
     @Override
     @KitEvent
     public void onPlayerAttacksLivingEntity(EntityDamageByEntityEvent event, KitPlayer attacker, LivingEntity entity) {
-        event.setDamage(event.getDamage()*damageMultiplier);
+        event.setDamage(event.getDamage()* rusherDamageMultiplier);
     }
 }
