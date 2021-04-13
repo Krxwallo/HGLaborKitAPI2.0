@@ -5,7 +5,6 @@ import de.hglabor.plugins.kitapi.kit.events.KitEvent;
 import de.hglabor.plugins.kitapi.kit.settings.FloatArg;
 import de.hglabor.plugins.kitapi.kit.settings.IntArg;
 import de.hglabor.plugins.kitapi.player.KitPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -41,12 +40,12 @@ public class RusherKit extends AbstractKit {
         Optional<Player> playerOptional = kitPlayer.getBukkitPlayer();
         if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(rusherHealth);
+            AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            if (maxHealth != null) maxHealth.setBaseValue(rusherHealth);
+
             player.setWalkSpeed(this.rusherWalkSpeed);
             AttributeInstance attackDamage = player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
-            if (attackDamage != null) {
-                attackDamage.setBaseValue(attackDamage.getBaseValue()* rusherDamageMultiplier);
-            }
+            if (attackDamage != null) attackDamage.setBaseValue(attackDamage.getBaseValue() * rusherDamageMultiplier);
         }
     }
 
