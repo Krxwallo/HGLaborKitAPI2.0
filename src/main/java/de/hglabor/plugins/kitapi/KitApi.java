@@ -157,7 +157,7 @@ public final class KitApi {
         kits.add(AnalystKit.INSTANCE);
         kits.add(KangarooKit.INSTANCE);
         kits.add(HulkKit.INSTANCE);
-        kits.add(ChorusKit.INSTANCE);
+        kits.add(RusherKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
