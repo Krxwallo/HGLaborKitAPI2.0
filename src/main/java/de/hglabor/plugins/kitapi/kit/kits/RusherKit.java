@@ -33,7 +33,7 @@ public class RusherKit extends AbstractKit {
         super("Rusher", Material.GOLDEN_SWORD);
         rusherHealth = 8; // 8 = 4 hearts
         rusherDamageMultiplier = 2.0F; // 2.0F = twice as much damage
-        rusherWalkSpeed = 4.0F; // 4.0F = twice as fast
+        rusherWalkSpeed = 0.4F; // 4.0F = twice as fast
     }
 
     @Override
