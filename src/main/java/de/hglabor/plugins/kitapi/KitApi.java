@@ -23,6 +23,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -104,8 +105,8 @@ public final class KitApi {
         }
     }
 
-    public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin) {
-        KitApiConfig.getInstance().register(plugin.getDataFolder());
+    public void register(KitPlayerSupplier kitPlayerSupplier, KitSelector kitSelector, JavaPlugin plugin, Path path) {
+        KitApiConfig.getInstance().register(path.toFile());
         this.playerSupplier = kitPlayerSupplier;
         this.kitSelector = kitSelector;
         this.plugin = plugin;
@@ -163,7 +164,7 @@ public final class KitApi {
         kits.add(PoseidonKit.INSTANCE);
         kits.add(PhantomKit.INSTANCE);
         kits.add(ArcherKit.INSTANCE);
-        kits.add(PirateKit.INSTANCE);
+        //kits.add(PirateKit.INSTANCE);
         //kits.add(BeamKit.INSTANCE);
         //sort alphabetically
         kits.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
@@ -272,11 +273,11 @@ public final class KitApi {
                 if (kit.getMainKitItem() != null && hasKitItemInAnyHand(player, kit)) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
-                            ChatUtils.getPlayerLocale(player)));
+                            ChatUtils.locale(player)));
                 } else if (kit.getMainKitItem() == null) {
                     player.sendActionBar(Localization.INSTANCE.getMessage("kit.cooldown",
                             ImmutableMap.of("numberInSeconds", String.valueOf(timeLeft / 1000D)),
-                            ChatUtils.getPlayerLocale(player)));
+                            ChatUtils.locale(player)));
                 }
                 return true;
             }

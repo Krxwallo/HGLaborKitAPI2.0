@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftBee;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.Entity;
@@ -54,7 +55,7 @@ public class BeequeenKit extends AbstractKit implements Listener {
     public void onDisable(KitPlayer kitPlayer) {
         HoneyTrail honeyTrail = kitPlayer.getKitAttribute(honeyTrailKey);
         if (honeyTrail != null) {
-            honeyTrail.cancel();
+            honeyTrail.stop();
         }
     }
 
@@ -73,6 +74,10 @@ public class BeequeenKit extends AbstractKit implements Listener {
         kitPlayer.putKitAttribute(honeyTrailKey, honeyTrail);
     }
 
+    public String getIsHoneyBlockKey() {
+        return isHoneyBlockKey;
+    }
+
     @Override
     public float getCooldown() {
         return cooldown;
@@ -83,6 +88,8 @@ public class BeequeenKit extends AbstractKit implements Listener {
         private final KitPlayer kitPlayer;
         private final BlockFace[] directions;
         private final long endTime;
+        private final Map<BlockFace, Block> currentHoneyBlocks;
+        private final Map<BlockFace, BlockData> oldFaceBlockData;
         private final Map<Block, BlockData> oldBlockData;
         private final List<Bee> bees;
 
@@ -92,10 +99,12 @@ public class BeequeenKit extends AbstractKit implements Listener {
             this.kitPlayer = KitApi.getInstance().getPlayer(player);
             this.endTime = System.currentTimeMillis() + honeyDurationInSeconds * 1000L;
             this.directions = new BlockFace[]{
-                    /* BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH, */ BlockFace.SELF,
-                    /* BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH_EAST */
+                    BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.SELF,
+                    BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH_EAST
             };
             this.bees = new ArrayList<>();
+            this.currentHoneyBlocks = new HashMap<>();
+            this.oldFaceBlockData = new HashMap<>();
             for (int i = 0; i < beeAmount; i++) {
                 Bee bee = (Bee) player.getWorld().spawnEntity(player.getEyeLocation(), EntityType.BEE);
                 bees.add(bee);
@@ -119,12 +128,32 @@ public class BeequeenKit extends AbstractKit implements Listener {
             makeBeesAngry();
 
             Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+            if (player.getLocation().getBlock().getType().equals(Material.HONEY_BLOCK)) {
+                return;
+            }
+
+            //At this point I dont care anymore
             for (BlockFace direction : directions) {
                 Block relative = block.getRelative(direction);
                 if (relative.getType().isSolid() && !relative.getType().equals(Material.HONEY_BLOCK) && !Utils.isUnbreakableLaborBlock(relative)) {
-                    oldBlockData.put(relative, relative.getBlockData().clone());
+
+                    if (currentHoneyBlocks.containsKey(direction)) {
+                        Block toReplace = currentHoneyBlocks.get(direction);
+                        BlockData blockData = oldFaceBlockData.getOrDefault(direction,Material.DIAMOND_BLOCK.createBlockData());
+                        if (blockData != null) {
+                            toReplace.setBlockData(blockData);
+                            toReplace.removeMetadata(isHoneyBlockKey, KitApi.getInstance().getPlugin());
+                            oldBlockData.remove(toReplace);
+                        }
+                    }
+
+                    BlockData clone = relative.getBlockData().clone();
+                    oldBlockData.put(relative, clone);
                     relative.setMetadata(isHoneyBlockKey, new FixedMetadataValue(KitApi.getInstance().getPlugin(), ""));
                     relative.setType(Material.HONEY_BLOCK);
+
+                    currentHoneyBlocks.put(direction, relative);
+                    oldFaceBlockData.put(direction, clone);
                 }
             }
         }
